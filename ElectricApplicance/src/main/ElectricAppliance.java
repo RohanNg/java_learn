@@ -1,3 +1,5 @@
+package main;
+
 /**
  * Created by rohan on 1/18/17.
  */
@@ -32,7 +34,7 @@ public abstract class ElectricAppliance {
      *  Plug, or connect this appliance to power supply.
      *  This make appliances power ready for appliance to be used.
      */
-    public void plugPower() {
+    public void plugPowerIn() {
         isPowerReady = true;
     }
 
@@ -65,7 +67,7 @@ public abstract class ElectricAppliance {
      *  Check if this appliance if ready to use
      * @return true if this appliance is ready to use
      */
-    public boolean isUsable() {
+    public boolean isUsableNow() {
         return isOn && isPowerReady;
     }
 }

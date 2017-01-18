@@ -1,4 +1,4 @@
-/**
+package main; /**
  * Created by rohan on 1/18/17.
  * <p>
  * Null value is implicitly not permitted.
@@ -10,7 +10,6 @@
 public class Container<T> {
     // (AF) Abstraction function:
     //      represent a container of a content with definite capacity
-
 
 
     private final double capacity;  // capacity of this container
@@ -26,14 +25,14 @@ public class Container<T> {
     //      capacity: private final
     //      all fields are immutable data type
 
-    private void checkRep(){
-        assert available >=0 && available <= capacity;
-        assert capacity > 0;
+    private void checkRep() {
+        assert available >= 0 && available <= capacity;
+        //     assert capacity > 0;
     }
 
     // Creators
 
-        // Constructors
+    // Constructors
 
     /**
      * Create a new container of the content.
@@ -41,7 +40,7 @@ public class Container<T> {
      * the container have capacity amount of the available content.
      *
      * @param capacity      capacity of this container
-     * @param content       the content of this Container
+     * @param content       the content of this container
      * @param initialAmount initial amount of this container
      * @throws IllegalArgumentException if the capacity is not positive,
      *                                  if the amount is negative
@@ -60,7 +59,7 @@ public class Container<T> {
      * If the initial amount of this empty container is 0
      *
      * @param capacity capacity of this container
-     * @param content  the content of this Container
+     * @param content  the content of this container
      * @throws IllegalArgumentException if the capacity is not positive,
      *                                  if the content is empty string
      */
@@ -80,6 +79,8 @@ public class Container<T> {
     public void changeContent(T content) {
         this.content = content;
         this.available = 0.0;
+        checkRep();
+
     }
 
     /**
@@ -95,7 +96,7 @@ public class Container<T> {
         } else {
             available = (capacity <= available + amount) ? capacity : available + amount;
         }
-
+        checkRep();
     }
 
     /**
@@ -106,17 +107,28 @@ public class Container<T> {
     }
 
     /**
-     * Take content of this container, decreasing available amount by amount
-     * If the amount is more than available content, the container is empty
+     * Take from available content of this container, decreasing available amount by amount
+     * Return true if the action is successful : the amount of content to be taken is in range [0, available content]
+     * Return false if the amount of content to be taken is larger than available content amount
      *
-     * @param amount amount of content to be dump
-     *
+     * @param amount amount of content to be taken
+     * @return true if the amount specified have been taken successfully
      * @throws IllegalArgumentException if amount is negative
      */
-    public void take(double amount) {
-        if ( amount < 0)
-            throw new IllegalArgumentException("Dump negative amount");
-        available = (available - amount > 0) ? available - amount : 0;
+    public boolean take(double amount) {
+        if (amount < 0)
+            throw new IllegalArgumentException("take negative amount");
+        if (amount == available) {
+            available = 0; // case amount == available == + INFINITY
+            return true;
+        }
+        else if (available > amount){
+            available = available - amount;
+            checkRep();
+            return true;
+        }
+        checkRep();
+        return false;
     }
 
     /**
@@ -132,9 +144,10 @@ public class Container<T> {
         return available == 0.0;
     }
 
-    public boolean isFull(){
+    public boolean isFull() {
         return available == capacity;
     }
+
     /**
      * Get available amount of content in this container
      *

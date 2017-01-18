@@ -1,6 +1,10 @@
+package main;
+
 /**
  * Created by rohan on 1/18/17.
  */
+
+
 public class AutomaticCoffeeMachine extends ElectricAppliance {
     /**
      * Type of bean and recipe for it
@@ -29,20 +33,26 @@ public class AutomaticCoffeeMachine extends ElectricAppliance {
     private final Container<LIQUID> liquidContainer;
     private BEAN bean;
     private LIQUID liquid;
+    public static final int BEAN_CONTAINER_CAPACITY = 300;
+    public static final int LIQUID_CONTAINER_CAPACITY = 3000;
 
     // creators
-        // constructor
+        // private constructor
     private AutomaticCoffeeMachine(double beanContainerCapacity, BEAN bean, double beanAmount,
                                    double liquidContainterCapacity, LIQUID liquid, double liquidAmount) {
         beanContainer = new Container<BEAN>(beanContainerCapacity, bean, beanAmount);
         liquidContainer = new Container<LIQUID>(liquidContainterCapacity, liquid, beanAmount);
         this.bean = bean;
         this.liquid = liquid;
+        // turn off and unplug appliance
+        this.turnOff();
+        this.unplugPower();
     }
         // factory method: SINGLETON PART
 
     private static final AutomaticCoffeeMachine singleInstance =
-            new AutomaticCoffeeMachine(100, BEAN.VIETNAMESEBEAN, 100, 3000, LIQUID.WATER, 3000);
+            new AutomaticCoffeeMachine(BEAN_CONTAINER_CAPACITY, BEAN.VIETNAMESEBEAN, 300,
+                    LIQUID_CONTAINER_CAPACITY, LIQUID.WATER, 3000);
 
     public static AutomaticCoffeeMachine getSingleInstance() {
         return singleInstance;
@@ -56,13 +66,14 @@ public class AutomaticCoffeeMachine extends ElectricAppliance {
      * @return true if the coffee is ready
      */
     public boolean brew() {
-        try {
+        if (!super.isUsableNow()) return false;
+        if(beanContainer.getAvailableAmount() >= bean.beanAmount
+                && liquidContainer.getAvailableAmount() >= bean.waterAmount) {
             beanContainer.take(bean.beanAmount);
             liquidContainer.take(bean.waterAmount);
             return true;
-        } catch (IllegalArgumentException e) {
-            return false;
         }
+        return false;
     }
 
     public void changeBean(BEAN bean) {
